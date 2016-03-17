@@ -1,32 +1,49 @@
-
+#coding:utf-8
 import requests
 from time import sleep
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
-#login
+#ç™»å½•
 payload = {'uName':'shandy', 'pWord':'61523577'}
 r = requests.get('http://api.shjmpt.com:9002/pubApi/uLogin', params=payload)
 token=(r.text).split("&")[0]
 print token
 
-#getPhone
+#è·å–æ‰‹æœºå·
 payload = {'ItemId':'28', 'token':token}
 r = requests.get('http://api.shjmpt.com:9002/pubApi/GetPhone', params=payload)
 Phone=(r.text).split(";")[0]
 print Phone
 
-sleep(40)
+sleep(20)
 
+#è·å–éªŒè¯ç 
 payload = {'ItemId':'28', 'token':token,'Phone':Phone}
-r = requests.get('http://api.shjmpt.com:9002/pubApi/GMessage', params=payload)
-messg=(r.text).split("&")[3]
-yzm=messg.split(r"ÑéÖ¤Âë")[1][0:6]
+isgetyzm=False
+for i in range(10):    
+    r = requests.get('http://api.shjmpt.com:9002/pubApi/GMessage', params=payload)
+    messg=(r.text)
+    if len(messg)>30:
+        me=messg.split("&")[3]        
+        yzm=(str(me).split('éªŒè¯ç ')[1])[0:6]        
+        isgetyzm=True
+    else:
+        yzm='not get yzm'
+    if isgetyzm:
+        break
+    sleep(5)
 print yzm
 
-#http://api.shjmpt.com:9002/pubApi/GMessage?token=WPLEFC1PE8c36WVMqYV54z7XyAmGXM15&ItemId=28&Phone=13252782564
-#MSG&28&13252782564&ÑéÖ¤Âë847569£¬µ±ÈÕÄÚÓĞĞ§¡£Èç¹ûÄúÎ´×Ô¶¨ÒåÃÜÂë£¬Ôò×¢²áÊ±µÄÑéÖ¤Âë¼´ÎªÔ­Ê¼ÃÜÂë£¬Çë¼°Ê±ĞŞ¸Ä¡£Èç·Ç±¾ÈË²Ù×÷£¬»Ø¸´TDÍËÔÄ¡£¡¾ËÑ·¿Íø¡¿
+#åŠ é»‘    
+tel=""
+payload = {'phoneList':tel, 'token':token}
+r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload)
 
-
-
-
+#é€€å‡º
+payload = {'token':token}
+r = requests.get('http://api.shjmpt.com:9002/pubApi/uExit', params=payload)
 
