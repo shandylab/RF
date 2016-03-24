@@ -17,10 +17,10 @@ def open_excel(file= 'file.xls'):
         print str(e)
         
 
-for i in range(5,20):
+for i in range(10,519):
     xlApp=win32com.client.Dispatch('Excel.Application')
     xlBook = xlApp.Workbooks.Open(u'D:\\汽车之家.xlsx')
-    xlSht = xlBook.Worksheets(u'已完成') 
+    xlSht = xlBook.Worksheets(u'Sheet2') 
     try:
         name = xlSht.Cells(i,1).Value
         pwd = xlSht.Cells(i,2).Value
@@ -45,16 +45,22 @@ for i in range(5,20):
         sleep(5)    
         if d.page_source.find(str('密码错误'))>0:
             print '密码错误'
-            xlSht.Cells(i,4).Value=u'密码错误'
-            
+            xlSht.Cells(i,6).Value=u'密码错误'            
         elif d.page_source.find(str('您的账号存在异常'))>0:
             print '您的账号存在异常'
-            xlSht.Cells(i,4).Value=u'您的账号存在异常'
-        elif d.page_source.find(str(u'*****'))>0:
-            print '正常'
-            xlSht.Cells(i,4).Value=u'正常'  
+            xlSht.Cells(i,6).Value=u'您的账号存在异常'
+        elif d.page_source.find(str(u'*****'))<0:
+            print '未绑手机'
+            xlSht.Cells(i,6).Value=u'未绑手机'          
         else:
-            print '错误'         
+            d.find_element_by_class_name('ico_lt01').click()
+            sleep(5)
+            if d.page_source.find(str('关禁闭'))>0:
+                print '关禁闭'
+                xlSht.Cells(i,6).Value=u'关禁闭'          
+            else:
+                print '正常'
+                xlSht.Cells(i,6).Value=u'正常'  
         d.quit()
         xlBook.Close(SaveChanges=1) 
     except:
