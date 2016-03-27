@@ -8,8 +8,21 @@ from time import sleep
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-def yzky(username,d):
-    #d=webdriver.Firefox()
+def yzkyd(username,d):
+    d.get(u'http://account.autohome.com.cn/register')
+    e=d.find_element_by_id('UserName')
+    e.clear()
+    e.send_keys(username)
+    d.find_element_by_id('Password').click()
+    sleep(4)
+    x=d.find_element_by_id('autohomeregister').text   
+    if x.find(u'一旦注册成功不能修改')>0:
+        return True
+    else:
+        return False
+
+def yzky(username):
+    d=webdriver.Firefox()
     d.get(u'http://account.autohome.com.cn/register')
     e=d.find_element_by_id('UserName')
     e.clear()
@@ -17,18 +30,15 @@ def yzky(username,d):
     d.find_element_by_id('Password').click()
     sleep(4)
     x=d.find_element_by_id('autohomeregister').text
-    d.quit()
-    print x
+    d.quit()   
     if x.find(u'一旦注册成功不能修改')>0:
         return True
     else:
-        return False
-
-    
+        return False   
     
     
     
 if __name__=="__main__":
     b=webdriver.Firefox()    
-    print yzky(username=u'sdfalloojjh',d=b)
-
+    print yzkyd(username=u'sdfalloojjh',d=b)
+    
