@@ -2,28 +2,43 @@
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 import sys
-import xlrd
 import win32com.client
 from time import sleep
 
+#===============================================================================
 reload(sys)
 sys.setdefaultencoding('utf-8')
+#===============================================================================
 
-def open_excel(file= 'file.xls'):
-    try:
-        data = xlrd.open_workbook(file)
-        return data
-    except Exception,e:
-        print str(e)
-        
-
-for i in range(10,519):
+#从excel取值,需要import win32com.client模块
+def get_value_from_excel(file= 'file.xls',sheetname='sheetname',row='row',column='column'):
     xlApp=win32com.client.Dispatch('Excel.Application')
-    xlBook = xlApp.Workbooks.Open(u'D:\\汽车之家.xlsx')
-    xlSht = xlBook.Worksheets(u'Sheet2') 
+    xlBook = xlApp.Workbooks.Open(file)
+    xlSht = xlBook.Worksheets(sheetname) 
+    value = xlSht.Cells(row,column).Value
+    xlBook.Close(SaveChanges=0) 
+    del xlApp
+    return value
+
+#写值进excel需要import win32com.client模块
+def set_value_to_excel(file= 'file.xls',sheetname='sheetname',row='row',column='column',value='value'):
     try:
-        name = xlSht.Cells(i,1).Value
-        pwd = xlSht.Cells(i,2).Value
+        xlApp=win32com.client.Dispatch('Excel.Application')
+        xlBook = xlApp.Workbooks.Open(file)
+        xlSht = xlBook.Worksheets(sheetname) 
+        xlSht.Cells(row,column).Value=value
+        xlBook.Close(SaveChanges=1) 
+        del xlApp
+        return True
+    except Exception:
+        return False
+
+for i in range(3,519):
+    
+    try:
+        name = get_value_from_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,1)
+        pwd = get_value_from_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,2)
+        print name
         
         d=webdriver.Firefox()
         try:
@@ -42,38 +57,31 @@ for i in range(10,519):
         e.clear()        
         e.send_keys(pwd)
         d.find_element_by_id('SubmitLogin').click()
-        sleep(5)    
-        if d.page_source.find(str('密码错误'))>0:
-            print '密码错误'
-            xlSht.Cells(i,6).Value=u'密码错误'            
-        elif d.page_source.find(str('您的账号存在异常'))>0:
+        sleep(8)    
+        page_source=d.page_source
+        if page_source.find(str(u'密码错误'))>0:
+            print '密码错误'                
+            set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,6,u'密码错误')       
+        elif page_source.find(str(u'您的账号存在异常'))>0:
             print '您的账号存在异常'
-            xlSht.Cells(i,6).Value=u'您的账号存在异常'
-        elif d.page_source.find(str(u'*****'))<0:
+            set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,6,u'您的账号存在异常') 
+        elif page_source.find(str(u'*****'))<0:
             print '未绑手机'
-            xlSht.Cells(i,6).Value=u'未绑手机'          
+            set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,6,u'未绑手机')          
         else:
-            d.find_element_by_class_name('ico_lt01').click()
+            d.find_element_by_class_name(u'ico_lt01').click()
             sleep(5)
-            if d.page_source.find(str('关禁闭'))>0:
+            d.get(d.find_element_by_id('app').get_attribute('src'))
+            sleep(2)
+            if d.page_source.find(u'关禁闭')>0:
                 print '关禁闭'
-                xlSht.Cells(i,6).Value=u'关禁闭'          
+                set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,6,u'关禁闭')          
             else:
                 print '正常'
-                xlSht.Cells(i,6).Value=u'正常'  
+                set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,6,u'正常')  
         d.quit()
-        xlBook.Close(SaveChanges=1) 
-    except:
-        xlBook.Close() 
-        del xlApp
-        print str(i)+' 错误'
+        
+    except Exception,e:  
+        print Exception,":",e
 print '完成'
-        
-        
-        
-        
-        
-        
-        
-        
         

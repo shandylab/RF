@@ -23,10 +23,8 @@ def set_value_to_excel(file= 'file.xls',sheetname='sheetname',row='row',column='
         return True
     except Exception:
         return False
-        
 
-x=get_value_from_excel(u'D:\\汽车之家.xlsx',u'Sheet2',2,2)
-print str(x) 
-y=set_value_to_excel(u'D:\\汽车之家.xlsx',u'Sheet2',2,10,u'test')
-print y 
 
+  
+    
+    
