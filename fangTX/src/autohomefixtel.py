@@ -53,7 +53,7 @@ for i in range(2,6):
             xlSht.Cells(i,4).Value=u'您的账号存在异常'
         elif d.page_source.find(str(u'请绑定手机'))>0:
             
-            payload = {'ItemId':'28', 'token':token}
+            payload = {'ItemId':'11187', 'token':token}
             r = requests.get('http://api.shjmpt.com:9002/pubApi/GetPhone', params=payload)
             Phone=(r.text).split(";")[0]
             print Phone
