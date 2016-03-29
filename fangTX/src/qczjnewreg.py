@@ -5,6 +5,8 @@ import sys
 import win32com.client
 from time import sleep
 import requests
+import random
+
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -40,7 +42,7 @@ def yzky(username):
     else:
         return False   
 #从excel取值,需要import win32com.client模块
-def get_value_from_excel(file= 'file.xls',sheetname='sheetname',row='row',column='column'):
+def get_value_from_excel(file,sheetname,row,column):
     xlApp=win32com.client.Dispatch('Excel.Application')
     xlBook = xlApp.Workbooks.Open(file)
     xlSht = xlBook.Worksheets(sheetname) 
@@ -50,7 +52,7 @@ def get_value_from_excel(file= 'file.xls',sheetname='sheetname',row='row',column
     return value
 
 #写值进excel需要import win32com.client模块
-def set_value_to_excel(file= 'file.xls',sheetname='sheetname',row='row',column='column',value='value'):
+def set_value_to_excel(file,sheetname,row,column,value):
     try:
         xlApp=win32com.client.Dispatch('Excel.Application')
         xlBook = xlApp.Workbooks.Open(file)
@@ -68,7 +70,7 @@ token=(r.text).split("&")[0]
 print token    
     
 if __name__=="__main__":    
-    for i in range(1,6):
+    for i in range(26,42):
         d=webdriver.Firefox()
         set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'正在注册')
         username=get_value_from_excel(u'D:\\test.xlsx',u'Sheet1',i,1)
@@ -81,7 +83,7 @@ if __name__=="__main__":
             e=d.find_element_by_id('Password')
             e.clear()
             e.send_keys(pwd)
-            sleep(range(10,15))
+            sleep(int(random.uniform(8, 16)))
             d.find_element_by_id('SubmitBtn').click()
             sleep(4)
            
@@ -104,14 +106,15 @@ if __name__=="__main__":
                     if not d.find_element_by_id('btngetchecknumber').is_displayed():
                         payload = {'phoneList':Phone, 'token':token}
                         r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload) 
+                        print u'添加黑名单' +r.text
                         continue
                     d.find_element_by_id('btngetchecknumber').click()
                     
                     sleep(20)
                     
                     payload = {'ItemId':'11187', 'token':token,'Phone':Phone}
-                    
-                    for i in range(10):    
+                    yzm=u'NA'
+                    for j in range(8):    
                         r = requests.get('http://api.shjmpt.com:9002/pubApi/GMessage', params=payload)
                         messg=(r.text)
                         if len(messg)>30:
@@ -124,19 +127,22 @@ if __name__=="__main__":
                     if not isgetyzm:
                         payload = {'phoneList':Phone, 'token':token}
                         r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload)                    
-                            
+                        print r.text    
                 
                 d.find_element_by_id('tchecknumber').send_keys(yzm)
-                sleep(1)
+                sleep(2)
                 d.find_element_by_id('save').click()
-                sleep(5)
-                if d.page_source.find(u'*****')>0:                
-                    set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'已绑手机')
-                    d.quit()           
+                sleep(4)
+                if d.page_source.find(u'*****')>0:    
+                    sleep(5)  
+                     
+                    print set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,3,Phone)      
+                    print set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'已绑手机')                    
+                             
                 
         else:
             set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'不可用')
-        d.quit()
+        d.close()
     print u'注册完成'  
     
             
