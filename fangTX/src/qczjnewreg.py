@@ -67,9 +67,9 @@ r = requests.get('http://api.shjmpt.com:9002/pubApi/uLogin', params=payload)
 token=(r.text).split("&")[0]
 print token    
     
-if __name__=="__main__":
-    d=webdriver.Firefox()
-    for i in range(7,8):
+if __name__=="__main__":    
+    for i in range(1,6):
+        d=webdriver.Firefox()
         set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'正在注册')
         username=get_value_from_excel(u'D:\\test.xlsx',u'Sheet1',i,1)
         pwd=get_value_from_excel(u'D:\\test.xlsx',u'Sheet1',i,2)
@@ -81,55 +81,63 @@ if __name__=="__main__":
             e=d.find_element_by_id('Password')
             e.clear()
             e.send_keys(pwd)
-            sleep(15)
+            sleep(range(10,15))
             d.find_element_by_id('SubmitBtn').click()
             sleep(4)
            
             if d.current_url.find(u'AddCar')>0:
-                d.get('http://i.autohome.com.cn/setting/mobile')
-                #获取手机号
-                payload = {'ItemId':'11187', 'token':token}
-                r = requests.get('http://api.shjmpt.com:9002/pubApi/GetPhone', params=payload)
-                Phone=(r.text).split(";")[0]
-                print Phone
-                
-                d.find_element_by_id('tphonenumber').clear()
-                d.find_element_by_id('tphonenumber').send_keys(Phone)
-                sleep(1)
-                d.find_element_by_id('tchecknumber').click()
-                sleep(1)
-                d.find_element_by_id('btngetchecknumber').click()
-                
-                sleep(20)
-                
-                payload = {'ItemId':'11187', 'token':token,'Phone':Phone}
                 isgetyzm=False
-                for i in range(10):    
-                    r = requests.get('http://api.shjmpt.com:9002/pubApi/GMessage', params=payload)
-                    messg=(r.text)
-                    if len(messg)>30:
-                        me=messg.split("&")[3]        
-                        yzm=(str(me).split('验证码')[1])[0:6]        
-                        isgetyzm=True
-                    else:
-                        pass                        
-                    if isgetyzm:
-                        break
-                    sleep(5)
-                print yzm
-                if not isgetyzm:
-                    payload = {'phoneList':Phone, 'token':token}
-                    r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload)
-                    break    
+                while not isgetyzm:
+                    set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'正在绑定手机')
+                    d.get('http://i.autohome.com.cn/setting/mobile')
+                    #获取手机号
+                    payload = {'ItemId':'11187', 'token':token}
+                    r = requests.get('http://api.shjmpt.com:9002/pubApi/GetPhone', params=payload)
+                    Phone=(r.text).split(";")[0]
+                    print Phone
+                    
+                    d.find_element_by_id('tphonenumber').clear()
+                    d.find_element_by_id('tphonenumber').send_keys(Phone)                    
+                    sleep(1)                    
+                    d.find_element_by_id('tchecknumber').click()
+                    sleep(2)
+                    if not d.find_element_by_id('btngetchecknumber').is_displayed():
+                        payload = {'phoneList':Phone, 'token':token}
+                        r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload) 
+                        continue
+                    d.find_element_by_id('btngetchecknumber').click()
+                    
+                    sleep(20)
+                    
+                    payload = {'ItemId':'11187', 'token':token,'Phone':Phone}
+                    
+                    for i in range(10):    
+                        r = requests.get('http://api.shjmpt.com:9002/pubApi/GMessage', params=payload)
+                        messg=(r.text)
+                        if len(messg)>30:
+                            me=messg.split("&")[3]        
+                            yzm=(str(me).split('验证码')[1])[3:9]        
+                            isgetyzm=True 
+                            break                       
+                        sleep(5)
+                    print yzm
+                    if not isgetyzm:
+                        payload = {'phoneList':Phone, 'token':token}
+                        r = requests.get('http://api.shjmpt.com:9002/pubApi/AddBlack', params=payload)                    
+                            
                 
                 d.find_element_by_id('tchecknumber').send_keys(yzm)
                 sleep(1)
                 d.find_element_by_id('save').click()
-            
+                sleep(5)
+                if d.page_source.find(u'*****')>0:                
+                    set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'已绑手机')
+                    d.quit()           
                 
         else:
             set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'不可用')
-                
+        d.quit()
+    print u'注册完成'  
     
             
             
