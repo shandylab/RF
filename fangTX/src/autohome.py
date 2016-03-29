@@ -33,7 +33,7 @@ def set_value_to_excel(file= 'file.xls',sheetname='sheetname',row='row',column='
     except Exception:
         return False
 
-for i in range(3,519):
+for i in range(518,519):
     
     try:
         name = get_value_from_excel(u'D:\\汽车之家.xlsx',u'Sheet2',i,1)
