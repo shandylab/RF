@@ -27,7 +27,7 @@ def set_value_to_excel(file,sheetname,row,column,value):
         
 
 x=get_value_from_excel('D:\\test.xlsx','Sheet1',1,1)
-print str(x) 
+print x
 y=set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',2,9,u'test')
 print y 
 

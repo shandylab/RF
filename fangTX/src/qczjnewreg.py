@@ -13,6 +13,7 @@ sys.setdefaultencoding('utf-8')
 
 def yzkyd(username,d):
     d.get(u'http://account.autohome.com.cn/register')
+    
     e=d.find_element_by_id('UserName')
     e.clear()
     e.send_keys(username)
@@ -70,7 +71,7 @@ token=(r.text).split("&")[0]
 print token    
     
 if __name__=="__main__":    
-    for i in range(26,42):
+    for i in range(6,8):
         d=webdriver.Firefox()
         set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',i,4,u'正在注册')
         username=get_value_from_excel(u'D:\\test.xlsx',u'Sheet1',i,1)
