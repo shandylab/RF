@@ -1,7 +1,7 @@
 #coding:utf-8
 import win32com.client
 
-class _useful_():    
+class shandylib():    
     # 从excel取值,需要import win32com.client模块
     def get_value_from_excel(self,file, sheetname, row, column):
         #file=
