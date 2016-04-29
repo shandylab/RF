@@ -2,7 +2,7 @@
 
 import win32com.client
 
-#ä»excelå–å€¼,éœ€è¦import win32com.clientæ¨¡å—
+#´ÓexcelÈ¡Öµ,ĞèÒªimport win32com.clientÄ£¿é
 def get_value_from_excel(file,sheetname,row,column):   
     xlApp=win32com.client.Dispatch('Excel.Application')
     xlBook = xlApp.Workbooks.Open(file)
@@ -12,7 +12,7 @@ def get_value_from_excel(file,sheetname,row,column):
     del xlApp
     return value
 
-#å†™å€¼è¿›exceléœ€è¦import win32com.clientæ¨¡å—
+#Ğ´Öµ½øexcelĞèÒªimport win32com.clientÄ£¿é
 def set_value_to_excel(file,sheetname,row,column,value):
     try:
         xlApp=win32com.client.Dispatch('Excel.Application')
@@ -26,9 +26,18 @@ def set_value_to_excel(file,sheetname,row,column,value):
         return False
         
 
-x=get_value_from_excel('D:\\test.xlsx','Sheet1',1,1)
-print x
-y=set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',2,9,u'test')
-print y 
+#x=get_value_from_excel('D:\\test.xlsx','Sheet1',1,1)
+#print x
+#y=set_value_to_excel(u'D:\\test.xlsx',u'Sheet1',2,9,u'test')
+#print y 
 
-
+f = open("D:\\1.txt", "r")  
+while True:  
+    line = f.readline()  
+    if line:  
+        pass    # do something here 
+        line=unicode(line.strip(),"gbk")        
+        print line
+    else:  
+        break
+f.close()

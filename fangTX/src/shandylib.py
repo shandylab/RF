@@ -14,7 +14,7 @@ class shandylib():
         return value
 
     # 写值进excel需要import win32com.client模块
-    def set_value_to_excel(self,file='file.xls', sheetname='sheetname', row='row', column='column', value='value'):
+    def set_value_to_excel(self,file, sheetname, row, column, value):
         try:
             xlApp = win32com.client.Dispatch('Excel.Application')
             xlBook = xlApp.Workbooks.Open(file)
@@ -26,7 +26,20 @@ class shandylib():
         except Exception:
             return False
     
-    
+    def readtxt(self,file):
+        try:
+            f = open(file, "r")  
+            while True:  
+                line = f.readline()  
+                if line:  
+                    pass    # do something here 
+                    line=unicode(line.strip(),"gbk")        
+                    return line
+                else:  
+                    break
+            f.close()
+        except Exception:
+            return False
 
 
   
