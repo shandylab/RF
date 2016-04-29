@@ -1,0 +1,20 @@
+*** Settings ***
+Library           Selenium2Library
+Library           ../../fangTX/src/shandylib.py
+
+*** Variables ***
+${name}           ${EMPTY}
+${password}       ${EMPTY}
+${regurl}         http://passport.fang.com/register.aspx
+${Tel}            ${EMPTY}
+${YZcode}         ${EMPTY}
+
+*** Test Cases ***
+fangTX
+    Comment    : FOR    ${i}    IN RANGE    1    10
+    ${name}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    1
+    ${password}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    2
+    Open Browser    ${regurl}    ff
+    input text    id=strUsername    ${name}
+    input Password    id=strPassword    ${password}
+    input Password    id=strPasswordConfirm    ${password}

@@ -1,0 +1,18 @@
+*** Settings ***
+Library           Collections
+Library           RequestsLibrary
+Library           ../../fangTX/src/shandylib.py
+Library           Selenium2Library
+
+*** Test Cases ***
+tianya
+    : FOR    ${i}    IN RANGE    1    10000
+    \    Create Session    baidu    http://bbs.tianya.cn/
+    \    ${resp}=    Get Request    baidu    /post-lookout-413615-7.shtml
+    \    log    ${resp.text}
+    \    Delete All Sessions
+    \    Comment    Set Value To Excel    E:\\github\\RF\\1.xlsx    Sheet2    ${i}    1
+    \    ...    ${i}
+
+test
+    Open Browser    https://passport.fang.com/register.aspx    ff
