@@ -13,6 +13,3 @@ tianya
     \    Delete All Sessions
     \    Comment    Set Value To Excel    E:\\github\\RF\\1.xlsx    Sheet2    ${i}    1
     \    ...    ${i}
-
-test
-    Open Browser    https://passport.fang.com/register.aspx    ff

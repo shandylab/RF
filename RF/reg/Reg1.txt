@@ -1,6 +1,8 @@
 *** Settings ***
 Library           Selenium2Library
 Library           ../../fangTX/src/shandylib.py
+Library           RequestsLibrary
+Library           String
 
 *** Variables ***
 ${name}           ${EMPTY}
@@ -18,3 +20,46 @@ fangTX
     input text    id=strUsername    ${name}
     input Password    id=strPassword    ${password}
     input Password    id=strPasswordConfirm    ${password}
+
+testsh
+    ${x}=    loginsh    tingfengren    ting1234
+    ${y}=    getTel    ${X}    28
+    sleep    60
+    ${z}=    getcode    ${X}    28    ${y}
+    log    ${z}
+
+tt
+    Get Length    sdfsdsdfadf
+
+*** Keywords ***
+loginsh
+    [Arguments]    ${uName}    ${pWord}
+    Create Session    kk    http://api.shjmpt.com:9002
+    ${resp}=    Get Request    kk    /pubApi/uLogin?uName=${uName}&pWord=${pWord}
+    @{words}    Split String    ${resp.text}    &
+    Delete All Sessions
+    [Return]    ${words[0]}
+
+getTel
+    [Arguments]    ${token}    ${itemid}
+    Create Session    kk    http://api.shjmpt.com:9002
+    ${resp}=    Get Request    kk    /pubApi/GetPhone?ItemId=${itemid}&token=${token}
+    @{words}    Split String    ${resp.text}    ;
+    Delete All Sessions
+    [Return]    ${words[0]}
+
+getcode
+    [Arguments]    ${token}    ${itemid}    ${tel}
+    @{words}    Set Variable    0    1
+    Create Session    kk    http://api.shjmpt.com:9002
+    ${resp}=    Get Request    kk    /pubApi/GMessage?token=${token}&ItemId=${itemid}&Phone=${tel}
+    log    ${resp.text}
+    ${len}=    Get Length    ${resp.text}
+    ${x}=    Should Contain    ${resp.text}    ${tel}
+    Run Keyword If    ${x}    log    ${resp.text}
+    Comment    ${EMPTY}
+    ...    ELSE    @{words}    0
+    Delete All Sessions
+    [Return]    ${words[0]}
+
+addblack
