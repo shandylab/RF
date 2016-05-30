@@ -10,6 +10,7 @@ ${password}       ${EMPTY}
 ${regurl}         http://passport.fang.com/register.aspx
 ${Tel}            ${EMPTY}
 ${YZcode}         ${EMPTY}
+@{name}
 
 *** Test Cases ***
 fangTX
@@ -29,7 +30,18 @@ testsh
     log    ${z}
 
 tt
-    Get Length    sdfsdsdfadf
+    Create Session    kk    http://passport.fang.com
+    @{name}    Create List    username=gfdgdfgddsfwsdf
+    ${resp}=    Post Request    kk    /usernameexist.api    @{name}
+    log    ${resp.text}
+
+SFYZ
+    Comment    : FOR    ${i}    IN RANGE    1    10
+    ${name}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    1
+    ${password}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    2
+    Open Browser    ${regurl}    ff
+    input text    id=strUsername    ${name}
+    Click Element    id=strPassword
 
 *** Keywords ***
 loginsh
