@@ -11,6 +11,7 @@ ${regurl}         http://passport.fang.com/register.aspx
 ${Tel}            ${EMPTY}
 ${YZcode}         ${EMPTY}
 @{name}
+${x}              ${EMPTY}
 
 *** Test Cases ***
 fangTX
@@ -36,12 +37,28 @@ tt
     log    ${resp.text}
 
 SFYZ
-    Comment    : FOR    ${i}    IN RANGE    1    10
-    ${name}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    1
-    ${password}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    1    2
     Open Browser    ${regurl}    ff
-    input text    id=strUsername    ${name}
-    Click Element    id=strPassword
+    :FOR    ${i}    IN RANGE    1    10
+    \    ${name}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    ${i}    1
+    \    ${password}=    Get Value From Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    ${i}    2
+    \    Reload Page
+    \    input text    id=strUsername    ${name}
+    \    Click Element    id=strMobile
+    \    sleep    2
+    \    ${x}=    Get Text    id=div_strUsername
+    \    log    ${x}
+    \    ${y}    ${z}    Run Keyword And Ignore Error    Should Contain    ${x}    该用户名已被注册
+    \    Run Keyword If    '${y}'=='PASS'    Set Value To Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    ${i}
+    \    ...    7    已使用
+    \    ...    ELSE    Set Value To Excel    E:\\github\\RF\\汽车之家.xlsx    Sheet2    ${i}
+    \    ...    7    未使用
+    Close All Browsers
+
+test
+    ${x}    Set Variable    字符串测试
+    log    ${x}
+    ${y}    ${z}    Run Keyword And Ignore Error    Should Contain     ${x}    fd
+    log    ${y}
 
 *** Keywords ***
 loginsh
